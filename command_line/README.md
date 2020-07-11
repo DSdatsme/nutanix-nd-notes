@@ -72,6 +72,8 @@ A quick quiz on how well you know the world of OSS.
 
 </details>
 
+## ---
+
 <details>
 
 <summary>3rd July, 2020</summary>
@@ -134,5 +136,213 @@ What do these pattern match (write only the unique string):
 1. `[N-R]*`
 2. `co[pd]*`
 3. `no..*`
+
+</details>
+
+## ---
+
+<details>
+
+<summary>4th July, 2020</summary>
+
+## Terminal Tips
+
+For all the terminal geeks who love to beautify their terminal here is a great resource.
+> **warning**: not for purists.
+https://drasite.com/blog/Pimp%20my%20terminal
+
+## Terminal Tour
+
+This week we will be covering search methods in the command line.
+
+We already covered the use of wildcard in the pattern description. Today we will see a few more methods.
+
+It is often necessary to use wildcard characters or other special characters as ASCII without attribution to their special function.
+To do this we will use  `\`  to specify them. Example, if need to find the $ in the text we will specify it as `\$` , and similarly so.
+
+To find the lines that begin with the pattern we will use `^`
+ex: `^GNU` will match all the lines that begin with GNU.
+
+The character `^`  has a different function within `[]`.
+Here the `^` specifies which characters not to match with.
+ex: if we had
+
+```text
+code
+mode
+bode
+```
+
+and used `[^c]ode` for matching we will only retrieve mode and bode and not code as we negated it.
+Just like `^` we can use `$` to match and return lines in which pattern occurs at the end.
+ex: `good$` will match all lines that end with good
+
+## Terminal Test
+
+A quick quiz on today's concepts (expecting answers in the thread):
+Assume that the search string contains this:
+
+```text
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. Neither the name of the University nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+```
+
+What do these pattern match ?
+
+1. `^[A-Za-z]*`
+2. `copy*$`
+3. `disclaimer.`
+4. `permission\.`
+
+</details>
+
+## ---
+
+<details>
+
+<summary>6th July, 2020</summary>
+
+## Terminal Tips
+
+1. Listing processes by memory consumption (for cpu consumption change 4 to 3)
+```bash
+ps aux | sort -nk 4
+```
+2. You can run file downloads in the background `nohup wget <download URL>`
+3. Often if we forget and run a cmd without root permission you just need to `sudo !!` to run the previous cmd under root.
+
+## Terminal Tour
+
+We will continue with one last post on pattern description in regular expressions.
+
+We can define pattern repetition number as well with `{}` after the pattern.
+ex: `[a-z]{3}` this expression matches all the small lettered three letter words in the document. Here, `[a-z]` matches small letters while `{3}` defines the number of times this pattern needs to repeat.
+
+Another ability is to define an alternate pattern for match with `|`
+ex: `good|bad` matches either the pattern good or bad.
+
+We can perform grouping of patterns to create a more complex expression using `()`
+ex: `(runn|us)ing` matches either running or using.
+
+The above methods come under extended regular expressions and hence need an `-E` flag to run with grep.
+
+## Terminal Test
+
+given that the search string contains the following :
+
+```text
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. Neither the name of the University nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+```
+
+find the lines that these pattern match:
+
+1. `(Re)?distribution*`
+2. `*tion`
+3. `(prior|endorse)`
+4. `[fn]?or`
+
+</details>
+
+## ---
+
+<details>
+
+<summary>7th July, 2020</summary>
+
+## Terminal Tips
+
+1. using xargs to pass the output of one cmd to another as a formatted input(ex: copying all the .conf files listed in the /etc/ directory to Desktop)
+`ls /etc/*.conf | xargs -i cp {} /home/user/Desktop`
+2. To record you shell session i.e. all the commands that you have typed you can use the `script` begin the session with  `script`  and when done enter `exit` to stop the records. (all cmds will be saved in typescript)
+3. Often when multiple terminal sessions are running the history of only one session is stored. To ensure that the history of all the concurrent sessions are stored we need to enable it as follows
+`shopt -s histappend`
+
+## Terminal Tour
+
+We discussed the various intricacies of regular expression patterns and looked at their use in search.
+
+### Description
+
+Today we will give a brief look at sed (stream editor) sed unlike grep not only searches for patterns but also helps in editing them.
+
+We will see a few functions that we can achieve with sed. We will mainly discuss the substitution operator
+
+### Usage
+
+`sed 's/<pattern>/<replacement text>/' file.txt`
+
+If there is a need to replace text only within a range of lines we can modify the above as
+`sed '<beg>,<end> s/<pattern>/<replacement text>/' file.txt`
+
+Here `beg` is the line number we need to begin replacement similarly `end` defines the last line till which we perform the op.
+If there is a need to specify the end of the line without it's the knowledge we can do so with substituting `end` with `$`.
+
+We can perform deletion instead of substitution as follows
+
+```sh
+sed 'nd' file.txt
+```
+
+where n is the nth line that needs to be deleted.
+
+A range can also be specified as we did above during substitution
+
+```sh
+sed '<beg>,<end>d' file.txt
+```
+
+or when a pattern needs to be deleted the following will work
+
+```sh
+sed '/<pattern>/d' file.txt
+```
+
+## Terminal Trouble
+
+When the hard disk gets old there are a variety of problems that come to fore. The main is the falling speed of the process execution.
+Often OS does a lot of bookkeeping tasks with caching files at many levels. One of them is caching in the hard disk. This is a great boon to fast execution but when the hard disk is about to fail every operation is heavy due to avoiding errors and it also damages the hard disk as
+more read/write ops are performed. To avoid this in a system with a good amount of RAM we can reduce the swappiness as follows.
+
+You can check your current swappiness with
+
+```sh
+cat /proc/sys/vm/swappiness
+```
+
+- Set the value for the running system.
+
+```sh
+sudo sh -c 'echo # > /proc/sys/vm/swappiness'
+```
+
+Here # is the number that needs to be set it can vary from 0 (none) - 60 (aggressive swapping)
+A value of 10 is usually suggested.
+
+- Backup `sysctl.conf`.
+
+```sh
+sudo cp -p /etc/sysctl.conf /etc/sysctl.conf.'date +%Y%m%d-%H:%M'
+```
+
+- Set the value in  `/etc/sysctl.conf` , so it stays after the reboot.
+
+```sh
+sudo sh -c 'echo "" >> /etc/sysctl.conf'
+sudo sh -c 'echo # >> /etc/sysctl.conf'
+sudo sh -c 'echo "vm.swappiness = #" >> /etc/sysctl.conf'
+```
 
 </details>
