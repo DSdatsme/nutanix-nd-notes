@@ -72,8 +72,6 @@ A quick quiz on how well you know the world of OSS.
 
 </details>
 
-## ---
-
 <details>
 
 <summary>3rd July, 2020</summary>
@@ -139,8 +137,6 @@ What do these pattern match (write only the unique string):
 
 </details>
 
-## ---
-
 <details>
 
 <summary>4th July, 2020</summary>
@@ -202,8 +198,6 @@ What do these pattern match ?
 
 </details>
 
-## ---
-
 <details>
 
 <summary>6th July, 2020</summary>
@@ -255,8 +249,6 @@ find the lines that these pattern match:
 4. `[fn]?or`
 
 </details>
-
-## ---
 
 <details>
 
@@ -344,5 +336,85 @@ sudo sh -c 'echo "" >> /etc/sysctl.conf'
 sudo sh -c 'echo # >> /etc/sysctl.conf'
 sudo sh -c 'echo "vm.swappiness = #" >> /etc/sysctl.conf'
 ```
+
+</details>
+
+<details>
+
+<summary>9th July, 2020</summary>
+
+## Terminal Tips
+
+1. Replacing a set of character with another in a file using tr (ex : small to caps )
+
+```sh
+cat file.txt | tr 'a-z' 'A-Z' > out.txt
+```
+
+2. Often typing all the args that we gave to previous command can be cumbersome.
+
+To use the args from previous cmds we can do so with !* ( ex: setting file permission for newly created files)
+
+```sh
+touch file1 file2 file3
+chmod +777 !*
+```
+
+3. It is often good to know the most used cmd and their frequency to set aliases ar simply for profiling
+
+```sh
+history | awk 'BEGIN {FS="[ \t]+|\\|"} {print $3}' | sort | uniq -c | sort -nr | head
+```
+
+## Terminal Tour
+
+This week we will look at terminal tools for system management. Often we work on an SSH to a distant server. This has several issues, the prominent among which is the broken pipeline.
+When large diagnostics or file transfers are run and the pipeline is broken, a lot of work is lost. Today we will discuss on a tool to mitigate this. **tmux** also known as a terminal multiplexer, allows you to have multiple terminal commands and applications running visually next to each other in an independently running terminal instance. This allows you to run various tasks without interruption from a broken pipeline or network error.
+
+A tmux session is an independent entity from which we can be 'attached' or 'detached' from
+Once tmux is installed with the following commands:
+
+```sh
+sudo apt update
+sudo apt install tmux
+```
+
+You can create a session in tmux as follows:
+
+```sh
+tmux new -s <session-name>
+```
+
+The session-name can be for example 'file transfer' or anything meaningful that describes the process that needs to
+run without interruption.
+
+Once the session is created to work in this session you need to attach to it, which is done as follow:
+
+```sh
+tmux attach -t <session-name>
+```
+
+Now all the terminal commands that you run will be run independently in this session and can be monitored by attaching to this session. While a process is running we can detach from it and allow it to run in the background with the keys:
+
+```sh
+Ctrl + b ,  d.
+```
+
+Once you are done with your work in a particular session you can close it with:
+
+```sh
+tmux kill-session -t <session-name>
+```
+
+and to list all the available sessions
+
+```sh
+tmux ls
+```
+
+will do.
+
+The cheat sheet provided below will help you with many other features that are present in tmux.
+https://tmuxcheatsheet.com/
 
 </details>
